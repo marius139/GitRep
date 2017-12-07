@@ -18,8 +18,9 @@ private:
 //Int for counting the amount of stops we have recieved
 unsigned int stops_initialized;
 
-//Vector for storing the
+//Vector for storing the points clicked in RViz
 std::vector<geometry_msgs::PointStamped> points;
+//Int for determening how many
 int sizeP;
 
 
