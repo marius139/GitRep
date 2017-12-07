@@ -17,9 +17,7 @@ class Route
 private:
 unsigned int stops_initialized;
 
-//Vector for storing the points clicked in RViz
 std::vector<geometry_msgs::PointStamped> points;
-//Int for determening how many
 int sizeP;
 
 int iRand;
@@ -31,7 +29,7 @@ std::vector<int> iOrdVec;
     ros::Publisher marker_pub;
     // creating a subscriber to the clicking
     ros::Subscriber click_sub;
-
+    
     //a function to send the goal to the movebase
     //goal_point is an object of type PointStamped (data in this message comes from function _clicked_point_cb
     void _send_goal(const geometry_msgs::PointStamped& goal_point)
@@ -100,17 +98,20 @@ std::vector<int> iOrdVec;
 
     }
 
-      //function for clicking on a point in the map.
-      //The geometry_msgs::PointStamped includes coordinates and a timestamp
+    //function runs when the user clicks in rviz
     void _clicked_point_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
-    {
+    { 
+        //writes the coordinates of the click to the terminal
         ROS_INFO("Clicked: %f, %f, %f", msg->point.x,
             msg->point.y, msg->point.z);
+        
+        //If all the stops haven't been initialized yet. 
         if (stops_initialized < sizeP)
         {
             points.push_back(*msg);
 
         }
+        
         if (stops_initialized >= sizeP)
         {
           for(int i=0; i < points.size()-1; i++){
