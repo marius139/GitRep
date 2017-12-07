@@ -18,14 +18,14 @@ private:
 //Counts the number of points that have been initialized
 unsigned int stops_initialized;
 
-//Vector for storing the points clicked in RViz
+//Vector for storing points clicked in RViz
 std::vector<geometry_msgs::PointStamped> points;
 //Int for determening how many points should be stored in the vector
 int sizeP;
 
 //Int for storing randomly generated number for making
 int iRand;
-
+//Vector for choosing next goal after reaching a goal
 std::vector<int> iOrdVec;
 
     // creating a client for MoveBaseAction messages, to send messages to the movebase which is used to move the robot
@@ -44,10 +44,11 @@ std::vector<int> iOrdVec;
         goal.target_pose.header.frame_id = goal_point.header.frame_id;
         goal.target_pose.pose.position = goal_point.point;
         goal.target_pose.pose.orientation.w = 1.0;
-        //
+        // creates a pointer when _taget_reached_cb is called. This points function that sends goal to _send_markers
         client.sendGoal(goal, boost::bind(&Route::_target_reached_cb, this, _1, _2));
         _send_markers();
     }
+    //_send_goal publishes the PointStamped messages -> the base then automatically generates the velocity message to reach desired point
 
     void _target_reached_cb(const actionlib::SimpleClientGoalState& state,
        const move_base_msgs::MoveBaseResultConstPtr& result)
