@@ -39,10 +39,11 @@ std::vector<int> iOrdVec;
         goal.target_pose.header.frame_id = goal_point.header.frame_id;
         goal.target_pose.pose.position = goal_point.point;
         goal.target_pose.pose.orientation.w = 1.0;
-        //
+        // creates a pointer when _taget_reached_cb is called. This points function that sends goal to _send_markers
         client.sendGoal(goal, boost::bind(&Route::_target_reached_cb, this, _1, _2));
         _send_markers();
     }
+    //_send_goal publishes the PointStamped messages -> the base then automatically generates the velocity message to reach desired point
 
     void _target_reached_cb(const actionlib::SimpleClientGoalState& state,
        const move_base_msgs::MoveBaseResultConstPtr& result)
@@ -98,20 +99,17 @@ std::vector<int> iOrdVec;
 
     }
 
-    //function runs when the user clicks in rviz
+      //function for clicking on a point in the map.
+      //The geometry_msgs::PointStamped includes coordinates and a timestamp
     void _clicked_point_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
-    { 
-        //writes the coordinates of the click to the terminal
+    {
         ROS_INFO("Clicked: %f, %f, %f", msg->point.x,
             msg->point.y, msg->point.z);
-        
-        //If all the stops haven't been initialized yet. 
         if (stops_initialized < sizeP)
         {
             points.push_back(*msg);
 
         }
-        
         if (stops_initialized >= sizeP)
         {
           for(int i=0; i < points.size()-1; i++){
