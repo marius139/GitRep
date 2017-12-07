@@ -15,10 +15,13 @@
 class Route
 {
 private:
+//Int for counting the amount of stops we have recieved
 unsigned int stops_initialized;
 
+//Vector for storing the
 std::vector<geometry_msgs::PointStamped> points;
 int sizeP;
+
 
 int iRand;
 std::vector<int> iOrdVec;
