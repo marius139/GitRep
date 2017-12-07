@@ -98,6 +98,8 @@ std::vector<int> iOrdVec;
 
     }
 
+      //function for clicking on a point in the map.
+      //The geometry_msgs::PointStamped includes coordinates and a timestamp
     void _clicked_point_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
     {
         ROS_INFO("Clicked: %f, %f, %f", msg->point.x,
