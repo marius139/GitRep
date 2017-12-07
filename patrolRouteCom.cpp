@@ -11,18 +11,21 @@
 #include <iostream>
 #include <time.h>
 
-
+//Start of class
 class Route
 {
 private:
+//Counts the number of points that have been initialized
 unsigned int stops_initialized;
 
 //Vector for storing the points clicked in RViz
 std::vector<geometry_msgs::PointStamped> points;
-//Int for determening how many
+//Int for determening how many points should be stored in the vector
 int sizeP;
 
+//Int for storing randomly generated number for making
 int iRand;
+
 std::vector<int> iOrdVec;
 
     // creating a client for MoveBaseAction messages, to send messages to the movebase which is used to move the robot
