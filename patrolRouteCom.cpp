@@ -15,28 +15,31 @@
 class Route
 {
 private:
-//Int for counting the amount of stops we have recieved
 unsigned int stops_initialized;
 
-//Vector for storing the
 std::vector<geometry_msgs::PointStamped> points;
 int sizeP;
-
 
 int iRand;
 std::vector<int> iOrdVec;
 
-
+    // creating a client for MoveBaseAction messages, to send messages to the movebase which is used to move the robot
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> client;
+    // creating a publisher for the markers
     ros::Publisher marker_pub;
+    // creating a subscriber to the clicking
     ros::Subscriber click_sub;
-
+    
+    //a function to send the goal to the movebase
+    //goal_point is an object of type PointStamped (data in this message comes from function _clicked_point_cb
     void _send_goal(const geometry_msgs::PointStamped& goal_point)
     {
+        //a initilization of the message goal eveything comes from the _clicked_point_cb through goal_point
         move_base_msgs::MoveBaseGoal goal;
         goal.target_pose.header.frame_id = goal_point.header.frame_id;
         goal.target_pose.pose.position = goal_point.point;
         goal.target_pose.pose.orientation.w = 1.0;
+        //
         client.sendGoal(goal, boost::bind(&Route::_target_reached_cb, this, _1, _2));
         _send_markers();
     }
