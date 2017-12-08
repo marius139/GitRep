@@ -99,8 +99,8 @@ std::vector<int> iOrdVec;
         if (stops_initialized < sizeP)
         {
             points.push_back(*msg);
-
         }
+        
         if (stops_initialized >= sizeP)
         {
           for(int i=0; i < points.size()-1; i++){
