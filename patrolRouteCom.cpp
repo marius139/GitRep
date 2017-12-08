@@ -66,8 +66,10 @@ std::vector<int> iOrdVec;
       iOrdVec.erase(iOrdVec.begin()+iRand);
     }
 
+    //Publishes the markers to rviz
     void _send_markers()
     {
+        //Design of the visualisation of the markers in rviz
         visualization_msgs::Marker marker;
         marker.header.stamp = ros::Time::now();
         marker.ns = "bus_stops";
@@ -85,44 +87,57 @@ std::vector<int> iOrdVec;
         marker.pose.orientation.z = 0;
         marker.pose.orientation.w = 0.7071;
         marker.lifetime = ros::Duration();
-
-
+        
+        
         visualization_msgs::MarkerArray marker_array;
-
+        
+        //Adds the same amount of visual markers, as the number of points in the vector
         for(int i=0; i<points.size();i++){
 
           if (stops_initialized > i)
           {
-              marker.header.frame_id = points[i].header.frame_id;
-              marker.id = i;
-              marker.pose.position = points[i].point;
-              marker.pose.position.z += 1.0;
-              marker_array.markers.push_back(marker);
+              marker.header.frame_id = points[i].header.frame_id;   //Sets the same
+              marker.id = i;                                        //ID of the marker
+              marker.pose.position = points[i].point;               //Sets the position of the virtual marker to the same position as the point placed in rviz
+              marker.pose.position.z += 1.0;                        //Sets the visual marker to be over the floor in rviz
+              marker_array.markers.push_back(marker);               //Stores the marker in the markerarray
           }
         }
+        
+        //sends the data to rviz
         marker_pub.publish(marker_array);
 
     }
 
-      //function for clicking on a point in the map.
+      //The following function executes when the user clicks in rviz
       //The geometry_msgs::PointStamped includes coordinates and a timestamp
     void _clicked_point_cb(const geometry_msgs::PointStamped::ConstPtr& msg)
     {
+        //prints the coordinates of the marker clicked to the terminal
         ROS_INFO("Clicked: %f, %f, %f", msg->point.x,
             msg->point.y, msg->point.z);
+        
+        //If there are more stops, that have not yet been initialized. 
         if (stops_initialized < sizeP)
         {
-            points.push_back(*msg);
-
+            points.push_back(*msg); //save the coordinates at the end of the vector, containing the waypoints.
         }
+        
+        //if all the points have been initialized, and the user wants to place another point.
         if (stops_initialized >= sizeP)
         {
-          for(int i=0; i < points.size()-1; i++){
+            //Swap the points, so that the first point initialized is shifted all the way to the back.
+          for(int i=0; i < points.size()-1; i++){   
               std::swap(points[i],points[i+1]);
             }
+            //Replace the previous first point placed, with the new one. This will be the last point in the vector.
             points.back() = *msg;
         }
+        
+        //a counter that counts how many points have been placed in the vector
         stops_initialized += 1;
+        
+        //sends the first point as a goal for the turtlebot to move to.
         _send_goal(points[0]);
     }
 
