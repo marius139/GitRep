@@ -142,19 +142,24 @@ std::vector<int> iOrdVec;
     }
 
 public:
+    //class constructor
     Route() :
+    //sets stops initialized to an intial value and the client to movebase
         stops_initialized(0), client("move_base")
     {
-
+      //sets variable for amount of points we want
         sizeP = 4;
+
+        //Ros nodehandle
         ros::NodeHandle n;
-
+        //Advertise markers to patrolRoute_markers
         marker_pub = n.advertise<visualization_msgs::MarkerArray>(
-            "busroute_markers", 1);
-
+            "patrolRoute_markers", 1);
+        //Subscribe to clicked points in RViz
         click_sub = n.subscribe( "clicked_point", 100,
             &Route::_clicked_point_cb, this);
 
+        //Set initial value for vector used for nvigating randomly between points
         for(int i=0; i<sizeP; i++){
           iOrdVec.push_back(i);
         }
