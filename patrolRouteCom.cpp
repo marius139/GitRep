@@ -96,7 +96,7 @@ std::vector<int> iOrdVec;
 
           if (stops_initialized > i)
           {
-              marker.header.frame_id = points[i].header.frame_id;   //Sets the same
+              marker.header.frame_id = points[i].header.frame_id;   //Sets the same frame to the virtual marker, as the point placed in rviz
               marker.id = i;                                        //ID of the marker
               marker.pose.position = points[i].point;               //Sets the position of the virtual marker to the same position as the point placed in rviz
               marker.pose.position.z += 1.0;                        //Sets the visual marker to be over the floor in rviz
