@@ -42,7 +42,7 @@ std::vector<int> iOrdVec;
        const move_base_msgs::MoveBaseResultConstPtr& result)
     {
       if (iOrdVec.size()==0){
-        for(int i=0; i<sizeP; i++){
+        for(int i=0; i<points.size(); i++){
           iOrdVec.push_back(i);
         }
       }
