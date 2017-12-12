@@ -54,13 +54,13 @@ std::vector<int> iOrdVec;
        const move_base_msgs::MoveBaseResultConstPtr& result)
     {
       if (iOrdVec.size()==0){
-        for(int i=0; i<sizeP; i++){
+        for(int i=0; i<points.size(); i++){
           iOrdVec.push_back(i);
         }
       }
 
       srand (time(NULL));
-      iRand = rand() % iOrdVec.size() + 0;
+      iRand = rand() % iOrdVec.size();
 
       _send_goal(points[iOrdVec[iRand]]);
       iOrdVec.erase(iOrdVec.begin()+iRand);
@@ -139,6 +139,9 @@ std::vector<int> iOrdVec;
         
         //sends the first point as a goal for the turtlebot to move to.
         _send_goal(points[0]);
+        //Clear vector for chosing next point to ensure we choose between the right number of points
+        iOrdVec.clear();
+
     }
 
 public:
@@ -158,11 +161,7 @@ public:
         //Subscribe to clicked points in RViz
         click_sub = n.subscribe( "clicked_point", 100,
             &Route::_clicked_point_cb, this);
-
-        //Set initial value for vector used for nvigating randomly between points
-        for(int i=0; i<sizeP; i++){
-          iOrdVec.push_back(i);
-        }
+            
     };
     ~Route(){};
 };
