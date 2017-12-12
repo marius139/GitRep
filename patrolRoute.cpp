@@ -22,7 +22,7 @@ int sizeP;
 
 int iRand;
 std::vector<int> iOrdVec;
-int iOrdRan;
+
 
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> client;
     ros::Publisher marker_pub;
@@ -34,27 +34,24 @@ int iOrdRan;
         goal.target_pose.header.frame_id = goal_point.header.frame_id;
         goal.target_pose.pose.position = goal_point.point;
         goal.target_pose.pose.orientation.w = 1.0;
-        client.sendGoal(goal,
-            boost::bind(&Route::_target_reached_cb, this, _1, _2));
+        client.sendGoal(goal, boost::bind(&Route::_target_reached_cb, this, _1, _2));
         _send_markers();
     }
 
-    void _target_reached_cb(const actionlib::SimpleClientGoalState& state, const move_base_msgs::MoveBaseResultConstPtr& result)
+    void _target_reached_cb(const actionlib::SimpleClientGoalState& state,
+       const move_base_msgs::MoveBaseResultConstPtr& result)
     {
-      if (iOrdVec.size()==0) {
-        for (int i=0; i<points.size(); i++) {
+      if (iOrdVec.size()==0){
+        for(int i=0; i<sizeP; i++){
           iOrdVec.push_back(i);
         }
       }
-      
+
       srand (time(NULL));
-
-      
       iRand = rand() % iOrdVec.size();
-      iOrdRan = iRand;
-      _send_goal(points[iOrdVec[iOrdRan]]);
-      iOrdVec.erase(iOrdVec.begin()+iOrdRan);
 
+      _send_goal(points[iOrdVec[iRand]]);
+      iOrdVec.erase(iOrdVec.begin()+iRand);
     }
 
     void _send_markers()
@@ -103,7 +100,7 @@ int iOrdRan;
         {
             points.push_back(*msg);
         }
-        
+
         if (stops_initialized >= sizeP)
         {
           for(int i=0; i < points.size()-1; i++){
@@ -119,19 +116,15 @@ public:
     Route() :
         stops_initialized(0), client("move_base")
     {
-
         sizeP = 4;
         ros::NodeHandle n;
 
         marker_pub = n.advertise<visualization_msgs::MarkerArray>(
-            "busroute_markers", 1);
+            "patrol_markers", 1);
 
         click_sub = n.subscribe( "clicked_point", 100,
             &Route::_clicked_point_cb, this);
-
-        for(int i=0; i<sizeP; i++){
-          iOrdVec.push_back(i);
-        }
+            
     };
     ~Route(){};
 };
