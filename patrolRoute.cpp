@@ -109,7 +109,9 @@ std::vector<int> iOrdVec;
             points.back() = *msg;
         }
         stops_initialized += 1;
+
         _send_goal(points[0]);
+        iOrdVec.clear();
     }
 
 public:
@@ -124,7 +126,7 @@ public:
 
         click_sub = n.subscribe( "clicked_point", 100,
             &Route::_clicked_point_cb, this);
-            
+
     };
     ~Route(){};
 };
